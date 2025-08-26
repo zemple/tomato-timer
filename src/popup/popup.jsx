@@ -25,8 +25,8 @@ function Popup() {
               <span className="text-xl">🍅</span>
             </div>
             <div>
-              <h1 className="text-lg font-bold tracking-wide">Tomato Clock</h1>
-              <p className="text-red-100 text-xs font-medium opacity-90">专注·高效·成长</p>
+              <h1 className="text-lg font-bold tracking-wide">Tomato Timer</h1>
+              <p className="text-red-100 text-xs font-medium opacity-90">focus·efficiency·growth</p>
             </div>
           </div>
         </div>
