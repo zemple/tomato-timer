@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw, Zap, Coffee } from 'lucide-react';
 
 function Timer() {
-  const [timeLeft, setTimeLeft] = useState(1500); // 25 minutes = 1500 seconds
+  const [timeLeft, setTimeLeft] = useState(10); // 25 minutes = 1500 seconds
   const [isRunning, setIsRunning] = useState(false);
   const [phase, setPhase] = useState('work'); // 'work' or 'break'
   const [completedSessions, setCompletedSessions] = useState(0);
   const [totalFocusTime, setTotalFocusTime] = useState(0);
 
-  const totalTime = phase === 'work' ? 1500 : 300; // Work 25min, Break 5min
+  const totalTime = phase === 'work' ? 10 : 300; // Work 25min, Break 5min
   const progress = ((totalTime - timeLeft) / totalTime) * 100;
 
   const formatTime = (seconds) => {
@@ -153,7 +153,7 @@ function Timer() {
 
   const resetTimer = () => {
     setIsRunning(false);
-    setTimeLeft(phase === 'work' ? 1500 : 300);
+    setTimeLeft(phase === 'work' ? 10 : 300);
     
     try {
       if (chrome?.runtime?.sendMessage) {
@@ -168,7 +168,7 @@ function Timer() {
     const newPhase = phase === 'work' ? 'break' : 'work';
     setPhase(newPhase);
     setIsRunning(false);
-    setTimeLeft(newPhase === 'work' ? 1500 : 300);
+    setTimeLeft(newPhase === 'work' ? 10 : 300);
     
     try {
       if (chrome?.runtime?.sendMessage) {

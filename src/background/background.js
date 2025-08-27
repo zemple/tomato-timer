@@ -103,72 +103,43 @@ async function handleSessionCompleted(phase) {
   playNotificationSound();
 }
 
-// 显示通知
+// 修改 src/background/background.js 中的 showNotification 函数
 async function showNotification(phase) {
-  const isWorkSession = phase === 'work';
-  const title = isWorkSession ? '🎉 Work Session Completed!' : '✨ Break Time Over!';
-  const message = isWorkSession 
-    ? 'Great job! Time for a well-deserved break.' 
-    : 'Break time is over. Ready to get back to work?';
-
-  try {
-    // 首先检查权限
-    const permission = await chrome.notifications.getPermissionLevel();
-    console.log('Notification permission level:', permission);
-
-    if (permission === 'denied') {
-      console.warn('Notifications are denied');
-      return;
+    const isWorkSession = phase === 'work';
+    const title = isWorkSession ? '🎉 Work Session Completed!' : '✨ Break Time Over!';
+    const message = isWorkSession 
+      ? 'Great job! Time for a well-deserved break.' 
+      : 'Break time is over. Ready to get back to work?';
+  
+    try {
+      const notificationId = `timer_${phase}_${Date.now()}`;
+      
+      // 完整的通知配置 - 确保所有必需属性都存在
+      const notificationOptions = {
+        type: 'basic',  // 必需
+        iconUrl: '',    // 即使是空字符串也要提供
+        title: title,   // 必需
+        message: message // 必需
+      };
+      
+      chrome.notifications.create(notificationId, notificationOptions, (createdId) => {
+        if (chrome.runtime.lastError) {
+          console.error('❌ Notification failed:', chrome.runtime.lastError.message);
+        } else {
+          console.log('✅ Notification created successfully:', createdId);
+        }
+      });
+      
+    } catch (error) {
+      console.error('❌ Error in showNotification:', error);
     }
-
-    const notificationId = `timer_${phase}_${Date.now()}`;
-    
-    chrome.notifications.create(notificationId, {
-      type: 'basic',
-      iconUrl: '/icons/icon48.png', // 使用绝对路径
-      title: title,
-      message: message,
-      priority: 2,
-      requireInteraction: true // 让通知保持显示直到用户点击
-    }, (notificationId) => {
-      if (chrome.runtime.lastError) {
-        console.error('Notification creation error:', chrome.runtime.lastError);
-        // 如果图标路径有问题，尝试不使用图标
-        chrome.notifications.create({
-          type: 'basic',
-          title: title,
-          message: message,
-          priority: 2
-        });
-      } else {
-        console.log('Notification created successfully:', notificationId);
-      }
-    });
-  } catch (error) {
-    console.error('Error showing notification:', error);
   }
-}
 
-// 播放提示音
+// 简化版本 - 不播放声音
 function playNotificationSound() {
-  // 尝试播放系统提示音
-  try {
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      if (tabs[0]) {
-        chrome.tabs.executeScript(tabs[0].id, {
-          code: `
-            try {
-              const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYeBjiS0/LNeSsFJHTG8N6QQAoUXrTp66hVFApGn+DyvmYeBjiS0/LNeSsFJHTG8N6QQAoUXrTp66hVFApGn+DyvmYeBjiS0/LNeSsFJHTG8N6QQAoUXrTp66hVFApGn+DyvmYeBjiS0/LNeSsFJHTG8N6QQAoUXrTp66hVFApGn+DyvmYe');
-              audio.play().catch(() => {});
-            } catch(e) {}
-          `
-        });
-      }
-    });
-  } catch (error) {
-    console.log('Could not play notification sound:', error);
+    console.log('🔊 Notification sound would play here');
+    // 暂时禁用声音功能，避免API错误
   }
-}
 
 // 更新统计数据
 async function updateStats() {
